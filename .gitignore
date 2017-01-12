@@ -1,0 +1,15 @@
+# ignore all hidden files
+.*
+
+# except these hidden files
+!.gitignore
+!.nvmrc
+!.eslintrc
+!.travis.yml
+
+# ignore these files
+*.log
+cov.html
+
+# ignore these directories
+node_modules

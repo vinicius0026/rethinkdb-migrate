@@ -1,0 +1,42 @@
+{
+  "name": "rethinkdb-migrate",
+  "version": "0.0.0",
+  "description": "Rethinkdb migration tool",
+  "main": "lib/index.js",
+  "bin": "/bin/rethinkdb-migrate",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "lab -v -c -a code -L",
+    "release": "grunt release",
+    "release:minor": "grunt release:minor",
+    "release:major": "grunt release:major"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vinicius0026/rethinkdb-migrate.git"
+  },
+  "keywords": [
+    "rethinkdb",
+    "rethink",
+    "db",
+    "migrate",
+    "migration",
+    "migrations"
+  ],
+  "author": "Vinicius Teixeira <vinicius0026@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vinicius0026/rethinkdb-migrate/issues"
+  },
+  "homepage": "https://github.com/vinicius0026/rethinkdb-migrate#readme",
+  "devDependencies": {
+    "code": "^4.0.0",
+    "grunt": "^1.0.1",
+    "grunt-cli": "^1.2.0",
+    "grunt-release": "^0.14.0",
+    "lab": "^11.2.2",
+    "standard": "^8.6.0"
+  }
+}
