@@ -2,9 +2,9 @@
 .*
 
 # except these hidden files
+!.eslintrc
 !.gitignore
 !.nvmrc
-!.eslintrc
 !.travis.yml
 
 # ignore these files
