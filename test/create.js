@@ -97,12 +97,14 @@ describe('Create migration Tests', () => {
     })
 
     const name = 'some-migration'
+    const defaultPath = Path.resolve(process.cwd(), 'migrations')
 
     Create({ name })
       .catch(err => {
         expect(err).to.exist()
         expect(err.message).to.equal('Error while writing file')
-        done()
+
+        Fs.remove(defaultPath, done)
       })
   })
 })
