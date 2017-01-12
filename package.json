@@ -33,6 +33,7 @@
   "homepage": "https://github.com/vinicius0026/rethinkdb-migrate#readme",
   "devDependencies": {
     "code": "^4.0.0",
+    "eslint-config-standard": "^6.2.1",
     "grunt": "^1.0.1",
     "grunt-cli": "^1.2.0",
     "grunt-release": "^0.14.0",
