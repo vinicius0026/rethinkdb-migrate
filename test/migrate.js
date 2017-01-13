@@ -131,6 +131,8 @@ describe('Migrate tests', { timeout: 10000 }, () => {
         return employeeIdSripped
       })
 
+      expect(employeesIdStripped).to.have.length(5)
+
       expect(employeesIdStripped).to.include([
         { companyId: 'acme', name: 'Wile E Coyote' },
         { companyId: 'acme', name: 'Road Runner' },
