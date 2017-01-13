@@ -102,71 +102,50 @@ describe('Migrate tests', { timeout: 10000 }, () => {
   })
 
   it('runs only migrations that have not been executed yet', done => {
-    // test setup
+    const Migrate = require('../lib/migrate')
     let conn
-    r.connect({ db: testDb })
-      .then(_conn => {
-        conn = _conn
 
-        return r.dbCreate(testDb).run(conn)
-      })
-      // Running first migration manually
-      .then(() => Promise.all([
-        r.tableCreate('companies').run(conn),
-        r.tableCreate('employees').run(conn),
-        r.tableCreate('_migrations').run(conn) // default migrations table
-      ]))
-      .then(() => r.table('_migrations').indexCreate('timestamp').run(conn))
-      .then(() => r.table('_migrations').indexWait().run(conn))
-      .then(() => {
-        const filename = '20151005145709-create-table.js'
-        const [, timestamp, name] = filename.match(/^(\d{14})-(.*)\.js$/)
+    // Running up migration from fixtures/migrations directory (2 migrations)
+    Migrate({
+      op: 'up',
+      migrationsDirectory: 'migrations',
+      relativeTo: Path.resolve(__dirname, 'fixtures'),
+      db: testDb
+    })
+    // Running migrations from fixtures/migrations2 directory, only 1 migration should be run
+    .then(() => Migrate({
+      op: 'up',
+      migrationsDirectory: 'migrations2',
+      relativeTo: Path.resolve(__dirname, 'fixtures'),
+      db: testDb
+    }))
+    .then(() => r.connect({ db: testDb }))
+    .then(_conn => {
+      conn = _conn
 
-        return r.table('_migrations').insert({ timestamp: Moment.utc(timestamp, 'YYYYMMDDHHmmss').toISOString(), name }).run(conn)
+      return r.table('employees').run(conn).then(cursor => cursor.toArray())
+    })
+    .then(employees => {
+      const employeesIdStripped = employees.map(employee => {
+        const employeeIdSripped = Object.assign({}, employee)
+        delete employeeIdSripped.id
+        return employeeIdSripped
       })
-      .then(() => conn.close())
-      // Actually run test:
-      .then(() => {
-        const Migrate = require('../lib/migrate')
-        return Migrate({
-          db: testDb,
-          op: 'up',
-          relativeTo: Path.resolve(__dirname, 'fixtures')
-        })
-      })
-      .then(() => r.connect({ db: testDb }))
-      .then(_conn => {
-        conn = _conn
 
-        return r.table('companies').run(conn).then(cursor => cursor.toArray())
-      })
-      .then(companies => {
-        expect(companies).to.include([
-          { id: 'acme', name: 'ACME' },
-          { id: 'shield', name: 'S.H.I.E.L.D' }
-        ])
+      expect(employeesIdStripped).to.include([
+        { companyId: 'acme', name: 'Wile E Coyote' },
+        { companyId: 'acme', name: 'Road Runner' },
+        { companyId: 'shield', name: 'Steve Rogers' },
+        { companyId: 'shield', name: 'Natalia Alianovna Romanova' },
+        { companyId: 'shield', name: 'Robert Bruce Banner' }
+      ])
 
-        return r.table('employees').run(conn).then(cursor => cursor.toArray())
-      })
-      .then(employees => {
-        const employeesIdStripped = employees.map(employee => {
-          const employeeIdSripped = Object.assign({}, employee)
-          delete employeeIdSripped.id
-          return employeeIdSripped
-        })
-
-        expect(employeesIdStripped).to.include([
-          { companyId: 'acme', name: 'Wile E Coyote' },
-          { companyId: 'acme', name: 'Road Runner' },
-          { companyId: 'shield', name: 'Tony Stark' },
-          { companyId: 'shield', name: 'Steve Rogers' },
-          { companyId: 'shield', name: 'Natalia Alianovna Romanova' },
-          { companyId: 'shield', name: 'Robert Bruce Banner' }
-        ])
-      })
-      .then(() => {
-        conn.close(done)
-      })
-      .catch(done)
+      expect(employeesIdStripped).to.not
+        .include({ companyId: 'shield', name: 'Tony Stark' })
+    })
+    .then(() => {
+      conn.close(done)
+    })
+    .catch(done)
   })
 })
