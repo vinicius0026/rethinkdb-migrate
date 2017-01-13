@@ -2,7 +2,6 @@
 
 const Code = require('code')
 const Lab = require('lab')
-const Moment = require('moment')
 const Path = require('path')
 const r = require('rethinkdb')
 
