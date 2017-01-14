@@ -8,7 +8,7 @@ Rethinkdb migration tool
 
 ## Acknowledgement
 
-This tool is highly inspired by, or, should I say, a rewrite of, Johan Öbrink
+This tool is highly inspired by, or, should I say, is a rewrite of, Johan Öbrink
 [`rethink-migrate`](https://github.com/JohanObrink/rethink-migrate). Unfortunately,
 `rethink-migrate` got stale. This is an attempt to improve the code and tests,
 track test coverage, update syntax to ES2015 and enhance functionality.
