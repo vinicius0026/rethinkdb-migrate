@@ -1,6 +1,7 @@
 # rethinkdb-migrate
 
 [![Build Status](https://travis-ci.org/vinicius0026/rethinkdb-migrate.svg?branch=master)](https://travis-ci.org/vinicius0026/rethinkdb-migrate)
+[![Coverage Status](https://coveralls.io/repos/github/vinicius0026/rethinkdb-migrate/badge.svg?branch=master)](https://coveralls.io/github/vinicius0026/rethinkdb-migrate?branch=master)
 [![Standard - JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 [![Dependencies](https://david-dm.org/vinicius0026/rethinkdb-migrate.svg)](https://david-dm.org/vinicius0026/rethinkdb-migrate)
 
@@ -8,7 +9,7 @@ Rethinkdb migration tool
 
 ## Acknowledgement
 
-This tool is highly inspired by, or, should I say, is a rewrite of, Johan Öbrink
+This tool is highly inspired by, or, should I say, is a rewrite of, Johan Öbrink's
 [`rethink-migrate`](https://github.com/JohanObrink/rethink-migrate). Unfortunately,
 `rethink-migrate` got stale. This is an attempt to improve the code and tests,
 track test coverage, update syntax to ES2015 and enhance functionality.

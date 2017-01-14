@@ -9,6 +9,8 @@
   },
   "scripts": {
     "test": "lab -v -c -a code -L",
+    "coveralls": "echo repo_token: $COVERALLS_RETHINKDB_MIGRATE> .coveralls.yml",
+    "coverage": "npm run coveralls && lab -c -a code -r lcov -o lcov.info && cat ./lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "release": "grunt release",
     "release:minor": "grunt release:minor",
     "release:major": "grunt release:major"
@@ -33,6 +35,7 @@
   "homepage": "https://github.com/vinicius0026/rethinkdb-migrate#readme",
   "devDependencies": {
     "code": "^4.0.0",
+    "coveralls": "^2.11.15",
     "eslint-config-standard": "^6.2.1",
     "grunt": "^1.0.1",
     "grunt-cli": "^1.2.0",
