@@ -151,4 +151,45 @@ describe('Migrate tests', { timeout: 10000 }, () => {
       .catch(done)
     })
   })
+
+  describe('Migrate down', () => {
+    afterEach(internals.cleanDb)
+    it('run migrate down, undoing all migrations', done => {
+      const Migrate = require('../lib/migrate')
+      let conn
+
+      // running up migration before test
+      Migrate({
+        op: 'up',
+        relativeTo: Path.resolve(__dirname, 'fixtures'),
+        db: testDb
+      })
+      // Running down migration and testing
+      .then(() => Migrate({
+        op: 'down',
+        relativeTo: Path.resolve(__dirname, 'fixtures'),
+        db: testDb
+      }))
+      .then(() => r.connect({ db: testDb }))
+      .then(_conn => {
+        conn = _conn
+
+        return r.tableList().run(conn)
+      })
+      .then(list => {
+        expect(list).to.have.length(1)
+        expect(list[0]).to.equal('_migrations')
+
+        return r.table('_migrations').run(conn).then(cursor => cursor.toArray())
+      })
+      .then(entries => {
+        expect(entries).to.be.an.array()
+        expect(entries).to.have.length(0)
+      })
+      .then(() => {
+        conn.close(done)
+      })
+      .catch(done)
+    })
+  })
 })
