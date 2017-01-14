@@ -1,1 +1,111 @@
 #! /usr/bin/env node
+const Mask = require('json-mask')
+const Path = require('path')
+
+const Migrations = require('../lib')
+
+const internals = {}
+
+internals.createOptions = {
+  migrationsDirectory: {
+    describe: 'Directory where migration files will be saved'
+  },
+  relativeTo: {
+    describe: 'Root path from which migration directory will be searched'
+  }
+}
+
+internals.migrateOptions = Object.assign({}, internals.createOptions, {
+  migrationsTable: {
+    describe: 'Table where meta information about migrations will be saved. Defaults to _migrations'
+  },
+  host: {
+    describe: 'The host to connect to, if using rethinkdb official driver. Defaults to localhost'
+  },
+  port: {
+    describe: 'The port to connect on, if using rethinkdb official driver. Defaults to 28015'
+  },
+  db: {
+    describe: 'Database name. Required (either via cli arguments, config file or env var)',
+    alias: 'd'
+  },
+  user: { describe: 'Rethinkdb user', alias: 'u' },
+  username: { describe: 'Rethinkdb username' },
+  password: { describe: 'Rethinkdb password', alias: 'p' },
+  authKey: { describe: 'Rethinkdb authKey' }
+})
+
+require('yargs')
+  .usage('Usage: $0 <command> [options]')
+  .command({
+    command: 'create <name>',
+    desc: 'Creates a migration file from template, with the provided name',
+    builder: internals.createOptions,
+    handler: runCreate
+  })
+  .example('$0 create <name>', 'Creates a migration named <name>')
+  .command({
+    command: 'up',
+    desc: 'Runs all new migrations up',
+    builder: internals.migrateOptions,
+    handler: runMigrationUp
+  })
+  .example('$0 up', 'Runs all new migrations up')
+  .command({
+    command: 'down',
+    desc: 'Runs all down migrations',
+    builder: internals.migrateOptions,
+    handler: runMigrationDown
+  })
+  .example('$0 down', 'Runs all migrations down')
+  .alias('f', 'file')
+  .nargs('f', 1)
+  .describe('f', 'Provides a file with options to be used when migration is run')
+  .help('h')
+  .alias('h', 'help')
+  .demandCommand(1)
+  .argv
+
+function runCreate (argv) {
+  const options = Mask(buildOptions(argv), 'name,migrationsDirectory,relativeTo')
+
+  Migrations.create(options)
+}
+
+function runMigrationUp (argv) {
+  const options = buildOptions(argv)
+  options.op = 'up'
+
+  Migrations.migrate(options)
+}
+
+function runMigrationDown (argv) {
+  const options = buildOptions(argv)
+  options.op = 'down'
+}
+
+/**
+ * Builds the options object that will be passed to the core module
+ * Reads options from command line, config file (if provided) and env vars
+ * Follows this rule of precedence: CLI > Config File > Env Vars
+ * That means that an option passed as argument in the command line will override
+ * an option present in the config file and also a environment variable, and so on
+ */
+function buildOptions (argv) {
+  const optionsMask = 'name,migrationsDirectory,relativeTo,migrationsTable,host,port,db,user,username,password,authKey'
+  const envVars = Mask(process.env, optionsMask)
+  const file = Mask(readOptionsFile(argv), optionsMask)
+  const args = Mask(argv, optionsMask)
+
+  return Object.assign({}, envVars, file, args)
+}
+
+function readOptionsFile (argv) {
+  if (!argv.f) {
+    return {}
+  }
+
+  const filePath = Path.resolve(process.cwd(), argv.f)
+
+  return require(filePath)
+}
