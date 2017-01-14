@@ -26,7 +26,7 @@ For v1.0:
 
 - [x] Create migration
 - [x] Migrate Up (run all migrations)
-- [ ] Migrate down
+- [x] Migrate down
 - [x] `rethinkdb` official driver support
 - [ ] Add event emiter to signal execution stage (for CLI logging)
 - [ ] CLI working
