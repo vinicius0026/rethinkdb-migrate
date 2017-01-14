@@ -3,6 +3,7 @@
 const Code = require('code')
 const Lab = require('lab')
 const Path = require('path')
+const Proxyquire = require('proxyquire')
 const r = require('rethinkdb')
 
 const lab = exports.lab = Lab.script()
@@ -149,6 +150,24 @@ describe('Migrate tests', { timeout: 10000 }, () => {
         conn.close(done)
       })
       .catch(done)
+    })
+
+    it('rejects promise if error reading migration files', done => {
+      const Migrate = Proxyquire('../lib/migrate', {
+        fs: {
+          readdir: (path, cb) => cb(new Error('Error reading migrations directory'))
+        }
+      })
+
+      Migrate({
+        op: 'up',
+        db: testDb
+      })
+      .catch(err => {
+        expect(err).to.exist()
+        expect(err.message).to.equal('Error reading migrations directory')
+        done()
+      })
     })
   })
 
