@@ -76,6 +76,8 @@ function runMigrationUp (argv) {
   const options = buildOptions(argv)
   options.op = 'up'
 
+  console.log('Migrations.migrate.emitter', Migrations.migrate.emitter)
+
   logger(Migrations.migrate.emitter)
 
   Migrations.migrate(options)
