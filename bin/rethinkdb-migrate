@@ -76,12 +76,20 @@ function runMigrationUp (argv) {
   const options = buildOptions(argv)
   options.op = 'up'
 
+  logger(Migrations.migrate.emitter)
+
   Migrations.migrate(options)
 }
 
 function runMigrationDown (argv) {
   const options = buildOptions(argv)
   options.op = 'down'
+}
+
+function logger (emitter) {
+  emitter.on('info', console.log)
+  emitter.on('warn', console.log)
+  emitter.on('error', console.error)
 }
 
 /**
