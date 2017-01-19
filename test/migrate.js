@@ -328,6 +328,64 @@ describe('Migrate tests', { timeout: 10000 }, () => {
       })
       .catch(done)
     })
+
+    it('works with rethinkdbdash (with pools === true, cursor false and servers specified)', done => {
+      const Migrate = require('../lib/migrate')
+      let conn
+      Migrate({
+        db: testDb,
+        op: 'up',
+        driver: 'rethinkdbdash',
+        cursor: false,
+        pool: true,
+        servers: [
+          { host: 'localhost', port: 28015 },
+          { host: 'localhost', port: 28016 }
+        ],
+        relativeTo: Path.resolve(__dirname, 'fixtures')
+      })
+      .then(() => r.connect({ db: testDb }))
+      .then(_conn => {
+        conn = _conn
+
+        return r.tableList().run(conn)
+      })
+      .then(tables => {
+        expect(tables).to.be.an.array()
+        expect(tables).to.include('companies')
+        expect(tables).to.include('employees')
+
+        return r.table('companies').run(conn).then(cursor => cursor.toArray())
+      })
+      .then(companies => {
+        expect(companies).to.include([
+          { id: 'acme', name: 'ACME' },
+          { id: 'shield', name: 'S.H.I.E.L.D' }
+        ])
+
+        return r.table('employees').run(conn).then(cursor => cursor.toArray())
+      })
+      .then(employees => {
+        const employeesIdStripped = employees.map(employee => {
+          const employeeIdSripped = Object.assign({}, employee)
+          delete employeeIdSripped.id
+          return employeeIdSripped
+        })
+
+        expect(employeesIdStripped).to.include([
+          { companyId: 'acme', name: 'Wile E Coyote' },
+          { companyId: 'acme', name: 'Road Runner' },
+          { companyId: 'shield', name: 'Tony Stark' },
+          { companyId: 'shield', name: 'Steve Rogers' },
+          { companyId: 'shield', name: 'Natalia Alianovna Romanova' },
+          { companyId: 'shield', name: 'Robert Bruce Banner' }
+        ])
+      })
+      .then(() => {
+        conn.close(done)
+      })
+      .catch(done)
+    })
   })
 
   describe('Migrate down', () => {
