@@ -17,7 +17,7 @@ track test coverage, update syntax to ES2015 and enhance functionality.
 ## Stage
 
 This is a work in progress. When the functionality is at par with the original
-module, a v1.0 will be release.
+module, a v1.0 will be released.
 
 NOTE: The CLI inteface will be mantained, but the node API will not.
 
@@ -47,7 +47,7 @@ Improving functionality:
 
 ## Contributing
 
-Feel free to suggest contributions and to open PRs.
+Feel free to suggest improvements and to open PRs.
 
 ## License
 
