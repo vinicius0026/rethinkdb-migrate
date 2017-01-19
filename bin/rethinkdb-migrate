@@ -66,6 +66,8 @@ require('yargs')
   .demandCommand(1)
   .argv
 
+logger(Migrations.migrate.emitter)
+
 function runCreate (argv) {
   const options = Mask(buildOptions(argv), 'name,migrationsDirectory,relativeTo')
 
@@ -75,8 +77,6 @@ function runCreate (argv) {
 function runMigrationUp (argv) {
   const options = buildOptions(argv)
   options.op = 'up'
-
-  logger(Migrations.migrate.emitter)
 
   Migrations.migrate(options)
     .then(() => {
@@ -90,8 +90,6 @@ function runMigrationUp (argv) {
 function runMigrationDown (argv) {
   const options = buildOptions(argv)
   options.op = 'down'
-
-  logger(Migrations.migrate.emitter)
 
   Migrations.migrate(options)
     .then(() => {
