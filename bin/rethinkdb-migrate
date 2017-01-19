@@ -79,12 +79,8 @@ function runMigrationUp (argv) {
   options.op = 'up'
 
   Migrations.migrate(options)
-    .then(() => {
-      console.log('Finished successfully')
-    })
-    .catch(err => {
-      console.error('Error while running migrations: ', err)
-    })
+    .then(console.log.bind('Finished successfully'))
+    .catch(console.error.bind('Error while running migrations:'))
 }
 
 function runMigrationDown (argv) {
@@ -92,12 +88,8 @@ function runMigrationDown (argv) {
   options.op = 'down'
 
   Migrations.migrate(options)
-    .then(() => {
-      console.log('Finished successfully')
-    })
-    .catch(err => {
-      console.error('Error while running migrations: ', err)
-    })
+    .then(console.log.bind('Finished successfully'))
+    .catch(console.error.bind('Error while running migrations:'))
 }
 
 function logger (emitter) {
