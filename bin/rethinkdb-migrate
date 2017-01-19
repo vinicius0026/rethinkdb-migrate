@@ -72,6 +72,8 @@ function runCreate (argv) {
   const options = Mask(buildOptions(argv), 'name,migrationsDirectory,relativeTo')
 
   Migrations.create(options)
+    .then(console.log.bind('Finished successfully'))
+    .catch(console.error.bind('Error while running migrations:'))
 }
 
 function runMigrationUp (argv) {
