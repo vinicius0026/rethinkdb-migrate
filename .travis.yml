@@ -4,5 +4,7 @@ node_js:
   - "7"
 addons:
   rethinkdb: '2.3'
+before_script:
+  - rethinkdb --port-offset 1 --directory rethinkdb_data2 --join localhost:29015
 script:
   - npm test && npm run coverage
