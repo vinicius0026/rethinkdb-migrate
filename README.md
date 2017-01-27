@@ -168,6 +168,7 @@ exporting an object, or a JSON file)
 module.exports = {
   db: "mydb",
   driver: "rethinkdbdash",
+  pool: true,
   servers: [
     { host: "localhost", port: 28015 },
     { host: "localhost", port: 28016 }
