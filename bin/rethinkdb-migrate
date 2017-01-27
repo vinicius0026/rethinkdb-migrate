@@ -60,14 +60,14 @@ require('yargs')
     command: 'up',
     desc: 'Runs all new migrations up',
     builder: internals.migrateOptions,
-    handler: runMigrationUp
+    handler: runMigrations.bind(null, 'up')
   })
   .example('$0 up', 'Runs all new migrations up')
   .command({
     command: 'down',
     desc: 'Runs all down migrations',
     builder: internals.migrateOptions,
-    handler: runMigrationDown
+    handler: runMigrations.bind(null, 'down')
   })
   .example('$0 down', 'Runs all migrations down')
   .alias('f', 'file')
@@ -84,26 +84,17 @@ function runCreate (argv) {
   const options = Mask(buildOptions(argv), 'name,migrationsDirectory,relativeTo')
 
   Migrations.create(options)
-    .then(console.log.bind('Finished successfully'))
-    .catch(console.error.bind('Error while running migrations:'))
+    .then(console.log.bind(null, 'Finished successfully'))
+    .catch(console.error.bind(null, 'Error while running migrations:'))
 }
 
-function runMigrationUp (argv) {
+function runMigrations (op, argv) {
   const options = buildOptions(argv)
-  options.op = 'up'
+  options.op = op
 
   Migrations.migrate(options)
-    .then(console.log.bind('Finished successfully'))
-    .catch(console.error.bind('Error while running migrations:'))
-}
-
-function runMigrationDown (argv) {
-  const options = buildOptions(argv)
-  options.op = 'down'
-
-  Migrations.migrate(options)
-    .then(console.log.bind('Finished successfully'))
-    .catch(console.error.bind('Error while running migrations:'))
+    .then(console.log.bind(null, 'Finished successfully'))
+    .catch(console.error.bind(null, 'Error while running migrations:'))
 }
 
 function logger (emitter) {
