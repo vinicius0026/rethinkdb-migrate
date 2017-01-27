@@ -1,6 +1,6 @@
 {
   "name": "rethinkdb-migrate",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "Rethinkdb migration tool",
   "main": "lib/index.js",
   "bin": "bin/rethinkdb-migrate",
