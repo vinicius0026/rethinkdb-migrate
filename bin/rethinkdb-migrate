@@ -16,6 +16,9 @@ internals.createOptions = {
 }
 
 internals.migrateOptions = Object.assign({}, internals.createOptions, {
+  driver: {
+    describe: 'Rethinkdb javascript driver. Can be either rethinkdb or rethinkdbdash. Defaults to rethinkdb, the official driver'
+  },
   migrationsTable: {
     describe: 'Table where meta information about migrations will be saved. Defaults to _migrations'
   },
@@ -32,7 +35,16 @@ internals.migrateOptions = Object.assign({}, internals.createOptions, {
   user: { describe: 'Rethinkdb user', alias: 'u' },
   username: { describe: 'Rethinkdb username' },
   password: { describe: 'Rethinkdb password', alias: 'p' },
-  authKey: { describe: 'Rethinkdb authKey' }
+  authKey: { describe: 'Rethinkdb authKey' },
+  discovery: {
+    describe: 'Whether or not the driver should try to keep a list of updated hosts. Only for rethinkdbdash'
+  },
+  pool: {
+    describe: 'Whether or not to use a connection pool when using rethinkdbdash driver. Default to false'
+  },
+  cursor: {
+    describe: 'If true, cursors will not be automatically converted to arrays when using rethinkdbdash. Default to true.'
+  }
 })
 
 require('yargs')
@@ -108,7 +120,7 @@ function logger (emitter) {
  * an option present in the config file and also a environment variable, and so on
  */
 function buildOptions (argv) {
-  const optionsMask = 'name,migrationsDirectory,relativeTo,migrationsTable,host,port,db,user,username,password,authKey'
+  const optionsMask = 'name,migrationsDirectory,relativeTo,migrationsTable,host,port,db,user,username,password,authKey,driver,discovery,pool,cursor,servers'
   const envVars = Mask(process.env, optionsMask)
   const file = Mask(readOptionsFile(argv), optionsMask)
   const args = Mask(argv, optionsMask)
