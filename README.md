@@ -107,7 +107,8 @@ exports.down = function (r, connection) {
 $ rethinkdb-migrate up --db=mydb
 ```
 
-This command will run all pending migrations up, in order of creation. See [Options](#options) section to configure this task.
+This command will run all pending migrations up, in order of creation. See
+[Options](#options) section to configure this task.
 
 ### Down
 
@@ -115,7 +116,8 @@ This command will run all pending migrations up, in order of creation. See [Opti
 $ rethinkdb-migrate down --db=mydb
 ```
 
-This command will run all `down` steps from migrations that have been run previously. See [Options](#options) section to configure this task.
+This command will run all `down` steps from migrations that have been run
+previously. See [Options](#options) section to configure this task.
 
 ### Options
 
@@ -145,7 +147,8 @@ Options can be passed to the script in three different ways:
 - Via configuration files
 - Via command line arguments
 
-Command line options take precedence over all other forms of passing options. Configuration file options take precedence over environment files.
+Command line options take precedence over all other forms of passing options.
+Configuration file options take precedence over environment variables.
 
 #### Passing options via environment variables
 
@@ -155,7 +158,8 @@ $ db=mydb rethinkdb-migrate up
 
 #### Passing options via configuration file
 
-Create a file that exports the options object (can be either a javascript file exporting a POJO, or a JSON file)
+Create a file that exports the options object (can be either a javascript file
+exporting an object, or a JSON file)
 
 
 ```javascript
@@ -184,7 +188,9 @@ $ rethinkdb-migrate down --db=mydb --host=127.0.0.1 --port=28016
 
 ## Contributing
 
-Feel free to suggest improvements and to open PRs. Please add/modify tests to maintain high coverage. Also, code must follow [standard](https://github.com/feross/standard) style.
+Feel free to suggest improvements and to open PRs. Please add/modify tests to
+maintain high coverage. Also, code must follow
+[standard](https://github.com/feross/standard) style.
 
 ### Running tests:
 
