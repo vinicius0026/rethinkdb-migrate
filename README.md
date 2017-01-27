@@ -31,7 +31,8 @@ For v1.0:
 - [x] `rethinkdb` official driver support
 - [x] Add event emiter to signal execution stage (for CLI logging)
 - [x] CLI working
-- [ ] `rethinkdbdash` driver support
+- [x] `rethinkdbdash` driver support
+- [ ] Documentation
 
 Improving functionality:
 
