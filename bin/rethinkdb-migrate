@@ -16,6 +16,9 @@ internals.createOptions = {
 }
 
 internals.migrateOptions = Object.assign({}, internals.createOptions, {
+  driver: {
+    describe: 'Rethinkdb javascript driver. Can be either rethinkdb or rethinkdbdash. Defaults to rethinkdb, the official driver'
+  },
   migrationsTable: {
     describe: 'Table where meta information about migrations will be saved. Defaults to _migrations'
   },
@@ -32,7 +35,16 @@ internals.migrateOptions = Object.assign({}, internals.createOptions, {
   user: { describe: 'Rethinkdb user', alias: 'u' },
   username: { describe: 'Rethinkdb username' },
   password: { describe: 'Rethinkdb password', alias: 'p' },
-  authKey: { describe: 'Rethinkdb authKey' }
+  authKey: { describe: 'Rethinkdb authKey' },
+  discovery: {
+    describe: 'Whether or not the driver should try to keep a list of updated hosts. Only for rethinkdbdash'
+  },
+  pool: {
+    describe: 'Whether or not to use a connection pool when using rethinkdbdash driver. Default to false'
+  },
+  cursor: {
+    describe: 'If true, cursors will not be automatically converted to arrays when using rethinkdbdash. Default to true.'
+  }
 })
 
 require('yargs')
@@ -48,14 +60,14 @@ require('yargs')
     command: 'up',
     desc: 'Runs all new migrations up',
     builder: internals.migrateOptions,
-    handler: runMigrationUp
+    handler: runMigrations.bind(null, 'up')
   })
   .example('$0 up', 'Runs all new migrations up')
   .command({
     command: 'down',
     desc: 'Runs all down migrations',
     builder: internals.migrateOptions,
-    handler: runMigrationDown
+    handler: runMigrations.bind(null, 'down')
   })
   .example('$0 down', 'Runs all migrations down')
   .alias('f', 'file')
@@ -72,26 +84,17 @@ function runCreate (argv) {
   const options = Mask(buildOptions(argv), 'name,migrationsDirectory,relativeTo')
 
   Migrations.create(options)
-    .then(console.log.bind('Finished successfully'))
-    .catch(console.error.bind('Error while running migrations:'))
+    .then(() => console.log('Finished successfully'))
+    .catch(console.error.bind(null, 'Error while running migrations:'))
 }
 
-function runMigrationUp (argv) {
+function runMigrations (op, argv) {
   const options = buildOptions(argv)
-  options.op = 'up'
+  options.op = op
 
   Migrations.migrate(options)
-    .then(console.log.bind('Finished successfully'))
-    .catch(console.error.bind('Error while running migrations:'))
-}
-
-function runMigrationDown (argv) {
-  const options = buildOptions(argv)
-  options.op = 'down'
-
-  Migrations.migrate(options)
-    .then(console.log.bind('Finished successfully'))
-    .catch(console.error.bind('Error while running migrations:'))
+    .then(console.log.bind(null, 'Finished successfully'))
+    .catch(console.error.bind(null, 'Error while running migrations:'))
 }
 
 function logger (emitter) {
@@ -108,7 +111,7 @@ function logger (emitter) {
  * an option present in the config file and also a environment variable, and so on
  */
 function buildOptions (argv) {
-  const optionsMask = 'name,migrationsDirectory,relativeTo,migrationsTable,host,port,db,user,username,password,authKey'
+  const optionsMask = 'name,migrationsDirectory,relativeTo,migrationsTable,host,port,db,user,username,password,authKey,driver,discovery,pool,cursor,servers'
   const envVars = Mask(process.env, optionsMask)
   const file = Mask(readOptionsFile(argv), optionsMask)
   const args = Mask(argv, optionsMask)
