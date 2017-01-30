@@ -6,6 +6,7 @@
 !.gitignore
 !.nvmrc
 !.travis.yml
+!.codeclimate.yml
 
 # ignore these files
 *.log
