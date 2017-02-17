@@ -128,7 +128,7 @@ Option name | Default value | Description
 driver | `rethinkdb` | Rethinkdb javascript driver. Can be either `rethinkdb` or `rethinkdbdash`.
 host | `localhost` | The host to connect to, if using rethinkdb official driver.
 port | `28015` | The port to connect on, if using rethinkdb official driver.
-db | None, this is required | Database name.
+db | None, this is required | Database name. Please note that the db will be created if it doesn't already exist, so there is no need to explicitly create it in the migrations.
 user | `''` | Rethinkdb user
 username | `''` | Rethinkdb username
 password | `''` | Rethinkdb password
