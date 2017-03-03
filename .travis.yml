@@ -7,5 +7,7 @@ addons:
 before_script:
   - rethinkdb --port-offset 1 --directory rethinkdb_data2 --join localhost:29015 &
   - sleep 20
+  - rethinkdb --cluster-port 29017 --no-http-admin --driver-port 48015 &
+  - sleep 20
 script:
   - npm test && npm run coverage

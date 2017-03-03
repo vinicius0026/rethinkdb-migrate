@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/vinicius0026/rethinkdb-migrate.svg?branch=master)](https://travis-ci.org/vinicius0026/rethinkdb-migrate)
 [![Coverage Status](https://coveralls.io/repos/github/vinicius0026/rethinkdb-migrate/badge.svg?branch=master)](https://coveralls.io/github/vinicius0026/rethinkdb-migrate?branch=master)
+[![Code Climate](https://codeclimate.com/github/vinicius0026/rethinkdb-migrate/badges/gpa.svg)](https://codeclimate.com/github/vinicius0026/rethinkdb-migrate)
 [![Standard - JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 [![Dependencies](https://david-dm.org/vinicius0026/rethinkdb-migrate.svg)](https://david-dm.org/vinicius0026/rethinkdb-migrate)
 
@@ -195,6 +196,11 @@ maintain high coverage. Also, code must follow
 
 ### Running tests:
 
+In order to run tests, you need three instances of rethinkdb running, two of
+those should be in a cluster.
+
+To achieve this, do as the following:
+
 - Install [rethinkdb](https://www.rethinkdb.com/docs/install/)
 - Make sure you have two instances of rethinkdb in a cluster:
 
@@ -204,6 +210,13 @@ $ rethinkdb
 # in another terminal session:
 $ rethinkdb --port-offset 1 --directory rethinkdb_data2 --join localhost:29015
 ```
+
+- Make sure you have a third instance of rethinkdb running in port 48015:
+
+```shell
+$ rethinkdb -d rethinkdb_data3 --cluster-port 29017 --no-http-admin --driver-port 48015
+```
+
 - Clone this repo
 - Make sure you are running node version >= 6
 - `npm install`

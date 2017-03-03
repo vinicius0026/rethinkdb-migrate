@@ -386,6 +386,74 @@ describe('Migrate tests', { timeout: 10000 }, () => {
       })
       .catch(done)
     })
+
+    it('works with rethinkdbdash (with pools === true and servers specified in port different than 28015)', done => {
+      const Migrate = require('../lib/migrate')
+      let r = require('rethinkdbdash')
+      Migrate({
+        db: testDb,
+        op: 'up',
+        driver: 'rethinkdbdash',
+        cursor: false,
+        pool: true,
+        servers: [
+          { host: 'localhost', port: 48015 }
+        ],
+        relativeTo: Path.resolve(__dirname, 'fixtures')
+      })
+      .catch(err => console.error(err))
+      .then(() => {
+        r = require('rethinkdbdash')({
+          db: testDb,
+          cursor: false,
+          pool: true,
+          servers: [
+            { host: 'localhost', port: 48015 }
+          ]
+        })
+
+        return r.tableList().run()
+      })
+      .then(tables => {
+        expect(tables).to.be.an.array()
+        expect(tables).to.include('companies')
+        expect(tables).to.include('employees')
+
+        return r.table('companies').run()
+      })
+      .then(companies => {
+        expect(companies).to.include([
+          { id: 'acme', name: 'ACME' },
+          { id: 'shield', name: 'S.H.I.E.L.D' }
+        ])
+
+        return r.table('employees').run()
+      })
+      .then(employees => {
+        const employeesIdStripped = employees.map(employee => {
+          const employeeIdSripped = Object.assign({}, employee)
+          delete employeeIdSripped.id
+          return employeeIdSripped
+        })
+
+        expect(employeesIdStripped).to.include([
+          { companyId: 'acme', name: 'Wile E Coyote' },
+          { companyId: 'acme', name: 'Road Runner' },
+          { companyId: 'shield', name: 'Tony Stark' },
+          { companyId: 'shield', name: 'Steve Rogers' },
+          { companyId: 'shield', name: 'Natalia Alianovna Romanova' },
+          { companyId: 'shield', name: 'Robert Bruce Banner' }
+        ])
+      })
+      .then(() => r.dbDrop(testDb))
+      .then(() => r.getPoolMaster().drain())
+      .then(done)
+      .catch(err => {
+        return r.dbDrop(testDb)
+          .then(() => done(err))
+          .catch(done)
+      })
+    })
   })
 
   describe('Migrate down', () => {
