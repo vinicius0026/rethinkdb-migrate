@@ -17,7 +17,7 @@ internals.createOptions = {
 
 internals.migrateOptions = Object.assign({}, internals.createOptions, {
   driver: {
-    describe: 'Rethinkdb javascript driver. Can be either rethinkdb or rethinkdbdash. Defaults to rethinkdb, the official driver'
+    describe: 'RethinkDB javascript driver. Can be either rethinkdb or rethinkdbdash. Defaults to rethinkdb, the official driver'
   },
   migrationsTable: {
     describe: 'Table where meta information about migrations will be saved. Defaults to _migrations'
@@ -32,10 +32,10 @@ internals.migrateOptions = Object.assign({}, internals.createOptions, {
     describe: 'Database name. Required (either via cli arguments, config file or env var)',
     alias: 'd'
   },
-  user: { describe: 'Rethinkdb user', alias: 'u' },
-  username: { describe: 'Rethinkdb username' },
-  password: { describe: 'Rethinkdb password', alias: 'p' },
-  authKey: { describe: 'Rethinkdb authKey' },
+  user: { describe: 'RethinkDB user', alias: 'u' },
+  username: { describe: 'RethinkDB username' },
+  password: { describe: 'RethinkDB password', alias: 'p' },
+  authKey: { describe: 'RethinkDB authKey' },
   discovery: {
     describe: 'Whether or not the driver should try to keep a list of updated hosts. Only for rethinkdbdash'
   },
@@ -93,7 +93,7 @@ function runMigrations (op, argv) {
   options.op = op
 
   Migrations.migrate(options)
-    .then(console.log.bind(null, 'Finished successfully'))
+    .then(() => console.log('Finished successfully'))
     .catch(console.error.bind(null, 'Error while running migrations:'))
 }
 
