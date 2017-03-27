@@ -6,7 +6,7 @@
 [![Standard - JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 [![Dependencies](https://david-dm.org/vinicius0026/rethinkdb-migrate.svg)](https://david-dm.org/vinicius0026/rethinkdb-migrate)
 
-Rethinkdb migration tool
+RethinkDB migration tool
 
 ## Acknowledgement
 
@@ -65,7 +65,7 @@ $ rethinkdb-migrate create <migration name>
 
 This operation creates a migration template file, where the database changes should be made.
 
-The template exports two functions, `up` and `down`, that receive an instance of the rethinkdb driver and a connection object. These functions **must** return a `Promise`.
+The template exports two functions, `up` and `down`, that receive an instance of the RethinkDB driver and a connection object. These functions **must** return a `Promise`.
 
 Running `rethinkdb-migrate create new-migration` will create a file `YYYYMMDDHHmmss-new-migration.js` in the directory `./migrations`. Do not change the filename in any way after creating it.
 
@@ -126,14 +126,14 @@ The following options can be passed to `rethinkdb-migrate`:
 
 Option name | Default value | Description
 ---|---|---
-driver | `rethinkdb` | Rethinkdb javascript driver. Can be either `rethinkdb` or `rethinkdbdash`.
-host | `localhost` | The host to connect to, if using rethinkdb official driver.
-port | `28015` | The port to connect on, if using rethinkdb official driver.
+driver | `rethinkdb` | RethinkDB javascript driver. Can be either `rethinkdb` or `rethinkdbdash`.
+host | `localhost` | The host to connect to, if using RethinkDB official driver.
+port | `28015` | The port to connect on, if using RethinkDB official driver.
 db | None, this is required | Database name. Please note that the db will be created if it doesn't already exist, so there is no need to explicitly create it in the migrations.
-user | `''` | Rethinkdb user
-username | `''` | Rethinkdb username
-password | `''` | Rethinkdb password
-authKey | `''` | Rethinkdb authKey
+user | `''` | RethinkDB user
+username | `''` | RethinkDB username
+password | `''` | RethinkDB password
+authKey | `''` | RethinkDB authKey
 discovery | `false` | Whether or not the driver should try to keep a list of updated hosts. Only available when using `rethinkdbdash` driver
 pool | `false` | Whether or not to use a connection pool when using `rethinkdbdash` driver.
 cursor | `true` | If true, cursors will not be automatically converted to arrays when using `rethinkdbdash`.
@@ -196,13 +196,13 @@ maintain high coverage. Also, code must follow
 
 ### Running tests:
 
-In order to run tests, you need three instances of rethinkdb running, two of
+In order to run tests, you need three instances of RethinkDB running, two of
 those should be in a cluster.
 
 To achieve this, do as the following:
 
 - Install [rethinkdb](https://www.rethinkdb.com/docs/install/)
-- Make sure you have two instances of rethinkdb in a cluster:
+- Make sure you have two instances of RethinkDB in a cluster:
 
 ```shell
 $ rethinkdb
