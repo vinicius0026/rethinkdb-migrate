@@ -173,7 +173,8 @@ module.exports = {
   servers: [
     { host: "localhost", port: 28015 },
     { host: "localhost", port: 28016 }
-  ]
+  ],
+  ssl: false
 }
 ```
 
