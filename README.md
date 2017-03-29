@@ -134,6 +134,7 @@ user | `''` | RethinkDB user
 username | `''` | RethinkDB username
 password | `''` | RethinkDB password
 authKey | `''` | RethinkDB authKey
+ssl | false | RethinkDB SSL/TLS Support. This option can be either `true` or an options object that will be passed to [tls.connect](https://nodejs.org/api/tls.html#tls_tls_connect_options_callback)
 discovery | `false` | Whether or not the driver should try to keep a list of updated hosts. Only available when using `rethinkdbdash` driver
 pool | `false` | Whether or not to use a connection pool when using `rethinkdbdash` driver.
 cursor | `true` | If true, cursors will not be automatically converted to arrays when using `rethinkdbdash`.
