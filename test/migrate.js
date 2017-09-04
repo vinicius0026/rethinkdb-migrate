@@ -54,52 +54,48 @@ describe('Migrate tests', { timeout: 10000 }, () => {
     it('runs all migrations up if no migration has been previously executed', done => {
       const Migrate = require('../lib/migrate')
       let conn
-      Migrate({
-        db: testDb,
-        op: 'up',
-        relativeTo: Path.resolve(__dirname, 'fixtures')
-      })
-      .then(() => r.connect({ db: testDb }))
-      .then(_conn => {
-        conn = _conn
+      Migrate({ db: testDb, op: 'up', relativeTo: Path.resolve(__dirname, 'fixtures') })
+        .then(() => r.connect({ db: testDb }))
+        .then(_conn => {
+          conn = _conn
 
-        return r.tableList().run(conn)
-      })
-      .then(tables => {
-        expect(tables).to.be.an.array()
-        expect(tables).to.include('companies')
-        expect(tables).to.include('employees')
-
-        return r.table('companies').run(conn).then(cursor => cursor.toArray())
-      })
-      .then(companies => {
-        expect(companies).to.include([
-          { id: 'acme', name: 'ACME' },
-          { id: 'shield', name: 'S.H.I.E.L.D' }
-        ])
-
-        return r.table('employees').run(conn).then(cursor => cursor.toArray())
-      })
-      .then(employees => {
-        const employeesIdStripped = employees.map(employee => {
-          const employeeIdSripped = Object.assign({}, employee)
-          delete employeeIdSripped.id
-          return employeeIdSripped
+          return r.tableList().run(conn)
         })
+        .then(tables => {
+          expect(tables).to.be.an.array()
+          expect(tables).to.include('companies')
+          expect(tables).to.include('employees')
 
-        expect(employeesIdStripped).to.include([
-          { companyId: 'acme', name: 'Wile E Coyote' },
-          { companyId: 'acme', name: 'Road Runner' },
-          { companyId: 'shield', name: 'Tony Stark' },
-          { companyId: 'shield', name: 'Steve Rogers' },
-          { companyId: 'shield', name: 'Natalia Alianovna Romanova' },
-          { companyId: 'shield', name: 'Robert Bruce Banner' }
-        ])
-      })
-      .then(() => {
-        conn.close(done)
-      })
-      .catch(done)
+          return r.table('companies').run(conn).then(cursor => cursor.toArray())
+        })
+        .then(companies => {
+          expect(companies).to.include([
+            { id: 'acme', name: 'ACME' },
+            { id: 'shield', name: 'S.H.I.E.L.D' }
+          ])
+
+          return r.table('employees').run(conn).then(cursor => cursor.toArray())
+        })
+        .then(employees => {
+          const employeesIdStripped = employees.map(employee => {
+            const employeeIdSripped = Object.assign({}, employee)
+            delete employeeIdSripped.id
+            return employeeIdSripped
+          })
+
+          expect(employeesIdStripped).to.include([
+            { companyId: 'acme', name: 'Wile E Coyote' },
+            { companyId: 'acme', name: 'Road Runner' },
+            { companyId: 'shield', name: 'Tony Stark' },
+            { companyId: 'shield', name: 'Steve Rogers' },
+            { companyId: 'shield', name: 'Natalia Alianovna Romanova' },
+            { companyId: 'shield', name: 'Robert Bruce Banner' }
+          ])
+        })
+        .then(() => {
+          conn.close(done)
+        })
+        .catch(done)
     })
 
     it('runs only migrations that have not been executed yet', done => {
@@ -107,49 +103,44 @@ describe('Migrate tests', { timeout: 10000 }, () => {
       let conn
 
       // Running up migration from fixtures/migrations directory (2 migrations)
-      Migrate({
-        op: 'up',
-        migrationsDirectory: 'migrations',
-        relativeTo: Path.resolve(__dirname, 'fixtures'),
-        db: testDb
-      })
-      // Running migrations from fixtures/migrations2 directory, only 1 migration should be run
-      .then(() => Migrate({
-        op: 'up',
-        migrationsDirectory: 'migrations2',
-        relativeTo: Path.resolve(__dirname, 'fixtures'),
-        db: testDb
-      }))
-      .then(() => r.connect({ db: testDb }))
-      .then(_conn => {
-        conn = _conn
+      Migrate({ op: 'up', migrationsDirectory: 'migrations', relativeTo: Path.resolve(__dirname, 'fixtures'), db: testDb })
+        // Running migrations from fixtures/migrations2 directory, only 1 migration should be run
+        .then(() => Migrate({
+          op: 'up',
+          migrationsDirectory: 'migrations2',
+          relativeTo: Path.resolve(__dirname, 'fixtures'),
+          db: testDb
+        }))
+        .then(() => r.connect({ db: testDb }))
+        .then(_conn => {
+          conn = _conn
 
-        return r.table('employees').run(conn).then(cursor => cursor.toArray())
-      })
-      .then(employees => {
-        const employeesIdStripped = employees.map(employee => {
-          const employeeIdSripped = Object.assign({}, employee)
-          delete employeeIdSripped.id
-          return employeeIdSripped
+          return r.table('employees').run(conn).then(cursor => cursor.toArray())
         })
+        .then(employees => {
+          const employeesIdStripped = employees.map(employee => {
+            const employeeIdSripped = Object.assign({}, employee)
+            delete employeeIdSripped.id
+            return employeeIdSripped
+          })
 
-        expect(employeesIdStripped).to.have.length(5)
+          expect(employeesIdStripped).to.have.length(5)
 
-        expect(employeesIdStripped).to.include([
-          { companyId: 'acme', name: 'Wile E Coyote' },
-          { companyId: 'acme', name: 'Road Runner' },
-          { companyId: 'shield', name: 'Steve Rogers' },
-          { companyId: 'shield', name: 'Natalia Alianovna Romanova' },
-          { companyId: 'shield', name: 'Robert Bruce Banner' }
-        ])
+          expect(employeesIdStripped).to.include([
+            { companyId: 'acme', name: 'Wile E Coyote' },
+            { companyId: 'acme', name: 'Road Runner' },
+            { companyId: 'shield', name: 'Steve Rogers' },
+            { companyId: 'shield', name: 'Natalia Alianovna Romanova' },
+            { companyId: 'shield', name: 'Robert Bruce Banner' }
+          ])
 
-        expect(employeesIdStripped).to.not
-          .include({ companyId: 'shield', name: 'Tony Stark' })
-      })
-      .then(() => {
-        conn.close(done)
-      })
-      .catch(done)
+          expect(employeesIdStripped).to.not
+            .include({ companyId: 'shield', name: 'Tony Stark' })
+        })
+        .then(() => {
+          conn.close(done)
+        })
+        .catch(done)
     })
 
     it('rejects promise if error reading migration files', done => {
@@ -159,120 +150,106 @@ describe('Migrate tests', { timeout: 10000 }, () => {
         }
       })
 
-      Migrate({
-        op: 'up',
-        db: testDb
-      })
-      .catch(err => {
-        expect(err).to.exist()
-        expect(err.message).to.equal('Error reading migrations directory')
-        done()
-      })
+      Migrate({ op: 'up', db: testDb })
+        .catch(err => {
+          expect(err).to.exist()
+          expect(err.message).to.equal('Error reading migrations directory')
+          done()
+        })
     })
 
     it('works with rethinkdbdash (no pools, cursor true as defaults)', done => {
       const Migrate = require('../lib/migrate')
       let conn
-      Migrate({
-        db: testDb,
-        op: 'up',
-        driver: 'rethinkdbdash',
-        relativeTo: Path.resolve(__dirname, 'fixtures')
-      })
-      .then(() => r.connect({ db: testDb }))
-      .then(_conn => {
-        conn = _conn
+      Migrate({ db: testDb, op: 'up', driver: 'rethinkdbdash', relativeTo: Path.resolve(__dirname, 'fixtures') })
+        .then(() => r.connect({ db: testDb }))
+        .then(_conn => {
+          conn = _conn
 
-        return r.tableList().run(conn)
-      })
-      .then(tables => {
-        expect(tables).to.be.an.array()
-        expect(tables).to.include('companies')
-        expect(tables).to.include('employees')
-
-        return r.table('companies').run(conn).then(cursor => cursor.toArray())
-      })
-      .then(companies => {
-        expect(companies).to.include([
-          { id: 'acme', name: 'ACME' },
-          { id: 'shield', name: 'S.H.I.E.L.D' }
-        ])
-
-        return r.table('employees').run(conn).then(cursor => cursor.toArray())
-      })
-      .then(employees => {
-        const employeesIdStripped = employees.map(employee => {
-          const employeeIdSripped = Object.assign({}, employee)
-          delete employeeIdSripped.id
-          return employeeIdSripped
+          return r.tableList().run(conn)
         })
+        .then(tables => {
+          expect(tables).to.be.an.array()
+          expect(tables).to.include('companies')
+          expect(tables).to.include('employees')
 
-        expect(employeesIdStripped).to.include([
-          { companyId: 'acme', name: 'Wile E Coyote' },
-          { companyId: 'acme', name: 'Road Runner' },
-          { companyId: 'shield', name: 'Tony Stark' },
-          { companyId: 'shield', name: 'Steve Rogers' },
-          { companyId: 'shield', name: 'Natalia Alianovna Romanova' },
-          { companyId: 'shield', name: 'Robert Bruce Banner' }
-        ])
-      })
-      .then(() => {
-        conn.close(done)
-      })
-      .catch(done)
+          return r.table('companies').run(conn).then(cursor => cursor.toArray())
+        })
+        .then(companies => {
+          expect(companies).to.include([
+            { id: 'acme', name: 'ACME' },
+            { id: 'shield', name: 'S.H.I.E.L.D' }
+          ])
+
+          return r.table('employees').run(conn).then(cursor => cursor.toArray())
+        })
+        .then(employees => {
+          const employeesIdStripped = employees.map(employee => {
+            const employeeIdSripped = Object.assign({}, employee)
+            delete employeeIdSripped.id
+            return employeeIdSripped
+          })
+
+          expect(employeesIdStripped).to.include([
+            { companyId: 'acme', name: 'Wile E Coyote' },
+            { companyId: 'acme', name: 'Road Runner' },
+            { companyId: 'shield', name: 'Tony Stark' },
+            { companyId: 'shield', name: 'Steve Rogers' },
+            { companyId: 'shield', name: 'Natalia Alianovna Romanova' },
+            { companyId: 'shield', name: 'Robert Bruce Banner' }
+          ])
+        })
+        .then(() => {
+          conn.close(done)
+        })
+        .catch(done)
     })
 
     it('works with rethinkdbdash (no pools, cursor false)', done => {
       const Migrate = require('../lib/migrate')
       let conn
-      Migrate({
-        db: testDb,
-        op: 'up',
-        driver: 'rethinkdbdash',
-        cursor: false,
-        relativeTo: Path.resolve(__dirname, 'fixtures')
-      })
-      .then(() => r.connect({ db: testDb }))
-      .then(_conn => {
-        conn = _conn
+      Migrate({ db: testDb, op: 'up', driver: 'rethinkdbdash', cursor: false, relativeTo: Path.resolve(__dirname, 'fixtures') })
+        .then(() => r.connect({ db: testDb }))
+        .then(_conn => {
+          conn = _conn
 
-        return r.tableList().run(conn)
-      })
-      .then(tables => {
-        expect(tables).to.be.an.array()
-        expect(tables).to.include('companies')
-        expect(tables).to.include('employees')
-
-        return r.table('companies').run(conn).then(cursor => cursor.toArray())
-      })
-      .then(companies => {
-        expect(companies).to.include([
-          { id: 'acme', name: 'ACME' },
-          { id: 'shield', name: 'S.H.I.E.L.D' }
-        ])
-
-        return r.table('employees').run(conn).then(cursor => cursor.toArray())
-      })
-      .then(employees => {
-        const employeesIdStripped = employees.map(employee => {
-          const employeeIdSripped = Object.assign({}, employee)
-          delete employeeIdSripped.id
-          return employeeIdSripped
+          return r.tableList().run(conn)
         })
+        .then(tables => {
+          expect(tables).to.be.an.array()
+          expect(tables).to.include('companies')
+          expect(tables).to.include('employees')
 
-        expect(employeesIdStripped).to.include([
-          { companyId: 'acme', name: 'Wile E Coyote' },
-          { companyId: 'acme', name: 'Road Runner' },
-          { companyId: 'shield', name: 'Tony Stark' },
-          { companyId: 'shield', name: 'Steve Rogers' },
-          { companyId: 'shield', name: 'Natalia Alianovna Romanova' },
-          { companyId: 'shield', name: 'Robert Bruce Banner' }
-        ])
-      })
-      .then(() => {
-        conn.close(done)
-      })
-      .catch(done)
+          return r.table('companies').run(conn).then(cursor => cursor.toArray())
+        })
+        .then(companies => {
+          expect(companies).to.include([
+            { id: 'acme', name: 'ACME' },
+            { id: 'shield', name: 'S.H.I.E.L.D' }
+          ])
+
+          return r.table('employees').run(conn).then(cursor => cursor.toArray())
+        })
+        .then(employees => {
+          const employeesIdStripped = employees.map(employee => {
+            const employeeIdSripped = Object.assign({}, employee)
+            delete employeeIdSripped.id
+            return employeeIdSripped
+          })
+
+          expect(employeesIdStripped).to.include([
+            { companyId: 'acme', name: 'Wile E Coyote' },
+            { companyId: 'acme', name: 'Road Runner' },
+            { companyId: 'shield', name: 'Tony Stark' },
+            { companyId: 'shield', name: 'Steve Rogers' },
+            { companyId: 'shield', name: 'Natalia Alianovna Romanova' },
+            { companyId: 'shield', name: 'Robert Bruce Banner' }
+          ])
+        })
+        .then(() => {
+          conn.close(done)
+        })
+        .catch(done)
     })
 
     it('works with rethinkdbdash (with pools === true, cursor false)', done => {
@@ -285,48 +262,47 @@ describe('Migrate tests', { timeout: 10000 }, () => {
         cursor: false,
         pool: true,
         relativeTo: Path.resolve(__dirname, 'fixtures')
-      })
-      .then(() => r.connect({ db: testDb }))
-      .then(_conn => {
-        conn = _conn
+      }).then(() => r.connect({ db: testDb }))
+        .then(_conn => {
+          conn = _conn
 
-        return r.tableList().run(conn)
-      })
-      .then(tables => {
-        expect(tables).to.be.an.array()
-        expect(tables).to.include('companies')
-        expect(tables).to.include('employees')
-
-        return r.table('companies').run(conn).then(cursor => cursor.toArray())
-      })
-      .then(companies => {
-        expect(companies).to.include([
-          { id: 'acme', name: 'ACME' },
-          { id: 'shield', name: 'S.H.I.E.L.D' }
-        ])
-
-        return r.table('employees').run(conn).then(cursor => cursor.toArray())
-      })
-      .then(employees => {
-        const employeesIdStripped = employees.map(employee => {
-          const employeeIdSripped = Object.assign({}, employee)
-          delete employeeIdSripped.id
-          return employeeIdSripped
+          return r.tableList().run(conn)
         })
+        .then(tables => {
+          expect(tables).to.be.an.array()
+          expect(tables).to.include('companies')
+          expect(tables).to.include('employees')
 
-        expect(employeesIdStripped).to.include([
-          { companyId: 'acme', name: 'Wile E Coyote' },
-          { companyId: 'acme', name: 'Road Runner' },
-          { companyId: 'shield', name: 'Tony Stark' },
-          { companyId: 'shield', name: 'Steve Rogers' },
-          { companyId: 'shield', name: 'Natalia Alianovna Romanova' },
-          { companyId: 'shield', name: 'Robert Bruce Banner' }
-        ])
-      })
-      .then(() => {
-        conn.close(done)
-      })
-      .catch(done)
+          return r.table('companies').run(conn).then(cursor => cursor.toArray())
+        })
+        .then(companies => {
+          expect(companies).to.include([
+            { id: 'acme', name: 'ACME' },
+            { id: 'shield', name: 'S.H.I.E.L.D' }
+          ])
+
+          return r.table('employees').run(conn).then(cursor => cursor.toArray())
+        })
+        .then(employees => {
+          const employeesIdStripped = employees.map(employee => {
+            const employeeIdSripped = Object.assign({}, employee)
+            delete employeeIdSripped.id
+            return employeeIdSripped
+          })
+
+          expect(employeesIdStripped).to.include([
+            { companyId: 'acme', name: 'Wile E Coyote' },
+            { companyId: 'acme', name: 'Road Runner' },
+            { companyId: 'shield', name: 'Tony Stark' },
+            { companyId: 'shield', name: 'Steve Rogers' },
+            { companyId: 'shield', name: 'Natalia Alianovna Romanova' },
+            { companyId: 'shield', name: 'Robert Bruce Banner' }
+          ])
+        })
+        .then(() => {
+          conn.close(done)
+        })
+        .catch(done)
     })
 
     it('works with rethinkdbdash (with pools === true, cursor false and servers specified)', done => {
@@ -343,48 +319,47 @@ describe('Migrate tests', { timeout: 10000 }, () => {
           { host: 'localhost', port: 28016 }
         ],
         relativeTo: Path.resolve(__dirname, 'fixtures')
-      })
-      .then(() => r.connect({ db: testDb }))
-      .then(_conn => {
-        conn = _conn
+      }).then(() => r.connect({ db: testDb }))
+        .then(_conn => {
+          conn = _conn
 
-        return r.tableList().run(conn)
-      })
-      .then(tables => {
-        expect(tables).to.be.an.array()
-        expect(tables).to.include('companies')
-        expect(tables).to.include('employees')
-
-        return r.table('companies').run(conn).then(cursor => cursor.toArray())
-      })
-      .then(companies => {
-        expect(companies).to.include([
-          { id: 'acme', name: 'ACME' },
-          { id: 'shield', name: 'S.H.I.E.L.D' }
-        ])
-
-        return r.table('employees').run(conn).then(cursor => cursor.toArray())
-      })
-      .then(employees => {
-        const employeesIdStripped = employees.map(employee => {
-          const employeeIdSripped = Object.assign({}, employee)
-          delete employeeIdSripped.id
-          return employeeIdSripped
+          return r.tableList().run(conn)
         })
+        .then(tables => {
+          expect(tables).to.be.an.array()
+          expect(tables).to.include('companies')
+          expect(tables).to.include('employees')
 
-        expect(employeesIdStripped).to.include([
-          { companyId: 'acme', name: 'Wile E Coyote' },
-          { companyId: 'acme', name: 'Road Runner' },
-          { companyId: 'shield', name: 'Tony Stark' },
-          { companyId: 'shield', name: 'Steve Rogers' },
-          { companyId: 'shield', name: 'Natalia Alianovna Romanova' },
-          { companyId: 'shield', name: 'Robert Bruce Banner' }
-        ])
-      })
-      .then(() => {
-        conn.close(done)
-      })
-      .catch(done)
+          return r.table('companies').run(conn).then(cursor => cursor.toArray())
+        })
+        .then(companies => {
+          expect(companies).to.include([
+            { id: 'acme', name: 'ACME' },
+            { id: 'shield', name: 'S.H.I.E.L.D' }
+          ])
+
+          return r.table('employees').run(conn).then(cursor => cursor.toArray())
+        })
+        .then(employees => {
+          const employeesIdStripped = employees.map(employee => {
+            const employeeIdSripped = Object.assign({}, employee)
+            delete employeeIdSripped.id
+            return employeeIdSripped
+          })
+
+          expect(employeesIdStripped).to.include([
+            { companyId: 'acme', name: 'Wile E Coyote' },
+            { companyId: 'acme', name: 'Road Runner' },
+            { companyId: 'shield', name: 'Tony Stark' },
+            { companyId: 'shield', name: 'Steve Rogers' },
+            { companyId: 'shield', name: 'Natalia Alianovna Romanova' },
+            { companyId: 'shield', name: 'Robert Bruce Banner' }
+          ])
+        })
+        .then(() => {
+          conn.close(done)
+        })
+        .catch(done)
     })
 
     it('works with rethinkdbdash (with pools === true and servers specified in port different than 28015)', done => {
@@ -400,59 +375,58 @@ describe('Migrate tests', { timeout: 10000 }, () => {
           { host: 'localhost', port: 48015 }
         ],
         relativeTo: Path.resolve(__dirname, 'fixtures')
-      })
-      .catch(err => console.error(err))
-      .then(() => {
-        r = require('rethinkdbdash')({
-          db: testDb,
-          cursor: false,
-          pool: true,
-          servers: [
-            { host: 'localhost', port: 48015 }
-          ]
+      }).catch(err => console.error(err))
+        .then(() => {
+          r = require('rethinkdbdash')({
+            db: testDb,
+            cursor: false,
+            pool: true,
+            servers: [
+              { host: 'localhost', port: 48015 }
+            ]
+          })
+
+          return r.tableList().run()
         })
+        .then(tables => {
+          expect(tables).to.be.an.array()
+          expect(tables).to.include('companies')
+          expect(tables).to.include('employees')
 
-        return r.tableList().run()
-      })
-      .then(tables => {
-        expect(tables).to.be.an.array()
-        expect(tables).to.include('companies')
-        expect(tables).to.include('employees')
-
-        return r.table('companies').run()
-      })
-      .then(companies => {
-        expect(companies).to.include([
-          { id: 'acme', name: 'ACME' },
-          { id: 'shield', name: 'S.H.I.E.L.D' }
-        ])
-
-        return r.table('employees').run()
-      })
-      .then(employees => {
-        const employeesIdStripped = employees.map(employee => {
-          const employeeIdSripped = Object.assign({}, employee)
-          delete employeeIdSripped.id
-          return employeeIdSripped
+          return r.table('companies').run()
         })
+        .then(companies => {
+          expect(companies).to.include([
+            { id: 'acme', name: 'ACME' },
+            { id: 'shield', name: 'S.H.I.E.L.D' }
+          ])
 
-        expect(employeesIdStripped).to.include([
-          { companyId: 'acme', name: 'Wile E Coyote' },
-          { companyId: 'acme', name: 'Road Runner' },
-          { companyId: 'shield', name: 'Tony Stark' },
-          { companyId: 'shield', name: 'Steve Rogers' },
-          { companyId: 'shield', name: 'Natalia Alianovna Romanova' },
-          { companyId: 'shield', name: 'Robert Bruce Banner' }
-        ])
-      })
-      .then(() => r.dbDrop(testDb))
-      .then(() => r.getPoolMaster().drain())
-      .then(done)
-      .catch(err => {
-        return r.dbDrop(testDb)
-          .then(() => done(err))
-          .catch(done)
-      })
+          return r.table('employees').run()
+        })
+        .then(employees => {
+          const employeesIdStripped = employees.map(employee => {
+            const employeeIdSripped = Object.assign({}, employee)
+            delete employeeIdSripped.id
+            return employeeIdSripped
+          })
+
+          expect(employeesIdStripped).to.include([
+            { companyId: 'acme', name: 'Wile E Coyote' },
+            { companyId: 'acme', name: 'Road Runner' },
+            { companyId: 'shield', name: 'Tony Stark' },
+            { companyId: 'shield', name: 'Steve Rogers' },
+            { companyId: 'shield', name: 'Natalia Alianovna Romanova' },
+            { companyId: 'shield', name: 'Robert Bruce Banner' }
+          ])
+        })
+        .then(() => r.dbDrop(testDb))
+        .then(() => r.getPoolMaster().drain())
+        .then(done)
+        .catch(err => {
+          return r.dbDrop(testDb)
+            .then(() => done(err))
+            .catch(done)
+        })
     })
   })
 
@@ -463,37 +437,29 @@ describe('Migrate tests', { timeout: 10000 }, () => {
       let conn
 
       // running up migration before test
-      Migrate({
-        op: 'up',
-        relativeTo: Path.resolve(__dirname, 'fixtures'),
-        db: testDb
-      })
-      // Running down migration and testing
-      .then(() => Migrate({
-        op: 'down',
-        relativeTo: Path.resolve(__dirname, 'fixtures'),
-        db: testDb
-      }))
-      .then(() => r.connect({ db: testDb }))
-      .then(_conn => {
-        conn = _conn
+      Migrate({ op: 'up', relativeTo: Path.resolve(__dirname, 'fixtures'), db: testDb })
+        // Running down migration and testing
+        .then(() => Migrate({ op: 'down', relativeTo: Path.resolve(__dirname, 'fixtures'), db: testDb }))
+        .then(() => r.connect({ db: testDb }))
+        .then(_conn => {
+          conn = _conn
 
-        return r.tableList().run(conn)
-      })
-      .then(list => {
-        expect(list).to.have.length(1)
-        expect(list[0]).to.equal('_migrations')
+          return r.tableList().run(conn)
+        })
+        .then(list => {
+          expect(list).to.have.length(1)
+          expect(list[0]).to.equal('_migrations')
 
-        return r.table('_migrations').run(conn).then(cursor => cursor.toArray())
-      })
-      .then(entries => {
-        expect(entries).to.be.an.array()
-        expect(entries).to.have.length(0)
-      })
-      .then(() => {
-        conn.close(done)
-      })
-      .catch(done)
+          return r.table('_migrations').run(conn).then(cursor => cursor.toArray())
+        })
+        .then(entries => {
+          expect(entries).to.be.an.array()
+          expect(entries).to.have.length(0)
+        })
+        .then(() => {
+          conn.close(done)
+        })
+        .catch(done)
     })
   })
 })

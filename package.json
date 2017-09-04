@@ -13,7 +13,8 @@
     "coverage": "npm run coveralls && lab -c -a code -r lcov -o lcov.info && cat ./lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "release": "grunt release",
     "release:minor": "grunt release:minor",
-    "release:major": "grunt release:major"
+    "release:major": "grunt release:major",
+    "lint": "eslint \"lib/**\" \"bin/**\" \"test/**\""
   },
   "repository": {
     "type": "git",
@@ -34,23 +35,27 @@
   },
   "homepage": "https://github.com/vinicius0026/rethinkdb-migrate#readme",
   "devDependencies": {
-    "code": "^4.0.0",
-    "coveralls": "^2.11.15",
-    "eslint-config-standard": "^6.2.1",
+    "code": "^4.1.0",
+    "coveralls": "^2.13.1",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
     "grunt": "^1.0.1",
     "grunt-cli": "^1.2.0",
     "grunt-release": "^0.14.0",
-    "lab": "^11.2.2",
-    "proxyquire": "^1.7.10",
-    "standard": "^8.6.0"
+    "lab": "^14.2.2",
+    "proxyquire": "^1.8.0",
+    "standard": "^10.0.3"
   },
   "dependencies": {
-    "fs-extra": "^2.0.0",
-    "joi": "^10.1.0",
+    "fs-extra": "^4.0.1",
+    "joi": "^10.6.0",
     "json-mask": "^0.3.8",
-    "moment": "^2.17.1",
+    "moment": "^2.18.1",
     "rethinkdb": "^2.3.3",
-    "rethinkdbdash": "^2.3.27",
-    "yargs": "^6.6.0"
+    "rethinkdbdash": "^2.3.31",
+    "yargs": "^8.0.2"
   }
 }

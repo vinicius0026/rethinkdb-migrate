@@ -47,6 +47,7 @@ internals.migrateOptions = Object.assign({}, internals.createOptions, {
   }
 })
 
+/* eslint-disable no-unused-expressions */
 require('yargs')
   .usage('Usage: $0 <command> [options]')
   .command({
