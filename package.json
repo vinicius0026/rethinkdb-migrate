@@ -13,7 +13,8 @@
     "coverage": "npm run coveralls && lab -c -a code -r lcov -o lcov.info && cat ./lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "release": "grunt release",
     "release:minor": "grunt release:minor",
-    "release:major": "grunt release:major"
+    "release:major": "grunt release:major",
+    "lint": "eslint \"lib/**\" \"bin/**\" \"test/**\""
   },
   "repository": {
     "type": "git",
