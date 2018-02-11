@@ -88,8 +88,8 @@ function runCreate (argv) {
   const options = Mask(buildOptions(argv), 'name,migrationsDirectory,relativeTo')
 
   Migrations.create(options)
-    .then(() => console.log('Finished successfully'))
-    .catch(console.error.bind(null, 'Error while running migrations:'))
+    .then((path) => console.log(`Created ${path}`))
+    .catch(console.error.bind(null, 'Error while creating migrations:'))
 }
 
 function runMigrations (op, argv) {
