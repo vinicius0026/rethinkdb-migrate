@@ -1,0 +1,64 @@
+2018-02-13T10:32:35.679876000 0.008300s notice: Recursively removing directory /Users/vinicius/vinicius0026/rethinkdb-migrate/rethinkdb_data2/tmp
+2018-02-13T10:32:35.681669000 0.010096s notice: Initializing directory /Users/vinicius/vinicius0026/rethinkdb-migrate/rethinkdb_data2
+2018-02-13T10:32:35.681765000 0.010188s notice: Running rethinkdb 2.3.6 (CLANG 9.0.0 (clang-900.0.37))...
+2018-02-13T10:32:35.687202000 0.015626s notice: Running on Darwin 17.4.0 x86_64
+2018-02-13T10:32:35.687255000 0.015678s notice: Loading data from directory /Users/vinicius/vinicius0026/rethinkdb-migrate/rethinkdb_data2
+2018-02-13T10:32:35.763587000 0.092011s info: Automatically using cache size of 400 MB
+2018-02-13T10:32:35.764221000 0.092644s notice: Listening for intracluster connections on port 29016
+2018-02-13T10:32:35.764400000 0.092823s info: Attempting connection to 1 peer...
+2018-02-13T10:32:35.765542000 0.093965s notice: Connected to server "MacBook_Pro_de_Vinicius_local_wcr" 4f8e1510-d5e3-42f3-97fd-7188e89d0b36
+2018-02-13T10:32:35.767694000 0.096117s notice: Listening for client driver connections on port 28016
+2018-02-13T10:32:35.767820000 0.096243s notice: Listening for administrative HTTP connections on port 8081
+2018-02-13T10:32:35.767822000 0.096244s notice: Listening on cluster addresses: 127.0.0.1, ::1
+2018-02-13T10:32:35.767827000 0.096250s notice: Listening on driver addresses: 127.0.0.1, ::1
+2018-02-13T10:32:35.767828000 0.096251s notice: Listening on http addresses: 127.0.0.1, ::1
+2018-02-13T10:32:35.767833000 0.096256s notice: To fully expose RethinkDB on the network, bind to all addresses by running rethinkdb with the `--bind all` command line option.
+2018-02-13T10:32:35.767838000 0.096261s notice: Server ready, "MacBook_Pro_de_Vinicius_local_wop" a0c71933-4d76-434b-b005-ba44d3db238c
+2018-02-13T10:32:59.332752000 23.661139s info: Table e7a3e2f3-fc6b-4bf0-9fc3-0ebd798f98d3: Starting a new Raft election for term 1.
+2018-02-13T10:32:59.333114000 23.661501s info: Table e7a3e2f3-fc6b-4bf0-9fc3-0ebd798f98d3: Added replica on this server.
+2018-02-13T10:32:59.342265000 23.670653s info: Table e7a3e2f3-fc6b-4bf0-9fc3-0ebd798f98d3: This server is Raft leader for term 1. Latest log index is 0.
+2018-02-13T10:32:59.850643000 24.179029s info: Table e7a3e2f3-fc6b-4bf0-9fc3-0ebd798f98d3: Configuration is changing.
+2018-02-13T10:33:00.802945000 25.131330s notice: Removing file /Users/vinicius/vinicius0026/rethinkdb-migrate/rethinkdb_data2/e7a3e2f3-fc6b-4bf0-9fc3-0ebd798f98d3
+2018-02-13T10:33:00.802956000 25.131340s info: Table e7a3e2f3-fc6b-4bf0-9fc3-0ebd798f98d3: Deleted the table.
+2018-02-13T10:33:00.938524000 25.266909s info: Table e6f353ed-b003-4282-aa1e-f6c4193b53c3: Starting a new Raft election for term 1.
+2018-02-13T10:33:00.938743000 25.267127s info: Table e6f353ed-b003-4282-aa1e-f6c4193b53c3: Added replica on this server.
+2018-02-13T10:33:00.948907000 25.277292s info: Table e6f353ed-b003-4282-aa1e-f6c4193b53c3: This server is Raft leader for term 1. Latest log index is 0.
+2018-02-13T10:33:01.460723000 25.789107s info: Table e6f353ed-b003-4282-aa1e-f6c4193b53c3: Configuration is changing.
+2018-02-13T10:33:02.500568000 26.828950s notice: Removing file /Users/vinicius/vinicius0026/rethinkdb-migrate/rethinkdb_data2/e6f353ed-b003-4282-aa1e-f6c4193b53c3
+2018-02-13T10:33:02.500577000 26.828958s info: Table e6f353ed-b003-4282-aa1e-f6c4193b53c3: Deleted the table.
+2018-02-13T10:33:02.726405000 27.054787s info: Table 412efc2d-41a4-450a-990e-1292c83d16d2: Starting a new Raft election for term 1.
+2018-02-13T10:33:02.726675000 27.055057s info: Table 412efc2d-41a4-450a-990e-1292c83d16d2: Added replica on this server.
+2018-02-13T10:33:02.737075000 27.065457s info: Table 412efc2d-41a4-450a-990e-1292c83d16d2: This server is Raft leader for term 1. Latest log index is 0.
+2018-02-13T10:33:03.249308000 27.577689s info: Table 412efc2d-41a4-450a-990e-1292c83d16d2: Configuration is changing.
+2018-02-13T10:33:03.456164000 27.784545s notice: Removing file /Users/vinicius/vinicius0026/rethinkdb-migrate/rethinkdb_data2/412efc2d-41a4-450a-990e-1292c83d16d2
+2018-02-13T10:33:03.456172000 27.784552s info: Table 412efc2d-41a4-450a-990e-1292c83d16d2: Deleted the table.
+2018-02-13T10:33:03.717509000 28.045890s info: Table 5adcbad3-be67-418c-b76c-88f3be55a1bc: Starting a new Raft election for term 1.
+2018-02-13T10:33:03.717854000 28.046235s info: Table 5adcbad3-be67-418c-b76c-88f3be55a1bc: Added replica on this server.
+2018-02-13T10:33:03.727389000 28.055770s info: Table 5adcbad3-be67-418c-b76c-88f3be55a1bc: This server is Raft leader for term 1. Latest log index is 0.
+2018-02-13T10:33:04.249692000 28.578072s info: Table 5adcbad3-be67-418c-b76c-88f3be55a1bc: Configuration is changing.
+2018-02-13T10:33:05.161152000 29.489531s notice: Removing file /Users/vinicius/vinicius0026/rethinkdb-migrate/rethinkdb_data2/5adcbad3-be67-418c-b76c-88f3be55a1bc
+2018-02-13T10:33:05.161165000 29.489542s info: Table 5adcbad3-be67-418c-b76c-88f3be55a1bc: Deleted the table.
+2018-02-13T10:33:05.352103000 29.680482s info: Table 90ec36e4-aabe-454f-8fd7-d8a2fe28bf6b: Starting a new Raft election for term 1.
+2018-02-13T10:33:05.352484000 29.680862s info: Table 90ec36e4-aabe-454f-8fd7-d8a2fe28bf6b: Added replica on this server.
+2018-02-13T10:33:05.362553000 29.690931s info: Table 90ec36e4-aabe-454f-8fd7-d8a2fe28bf6b: This server is Raft leader for term 1. Latest log index is 0.
+2018-02-13T10:33:05.871752000 30.200129s info: Table 90ec36e4-aabe-454f-8fd7-d8a2fe28bf6b: Configuration is changing.
+2018-02-13T10:33:06.841996000 31.170372s notice: Removing file /Users/vinicius/vinicius0026/rethinkdb-migrate/rethinkdb_data2/90ec36e4-aabe-454f-8fd7-d8a2fe28bf6b
+2018-02-13T10:33:06.842006000 31.170381s info: Table 90ec36e4-aabe-454f-8fd7-d8a2fe28bf6b: Deleted the table.
+2018-02-13T10:33:07.026538000 31.354914s info: Table d5072751-3738-48ab-b3e0-f7a1860cf458: Starting a new Raft election for term 1.
+2018-02-13T10:33:07.026775000 31.355150s info: Table d5072751-3738-48ab-b3e0-f7a1860cf458: Added replica on this server.
+2018-02-13T10:33:07.036359000 31.364735s info: Table d5072751-3738-48ab-b3e0-f7a1860cf458: This server is Raft leader for term 1. Latest log index is 0.
+2018-02-13T10:33:07.546986000 31.875361s info: Table d5072751-3738-48ab-b3e0-f7a1860cf458: Configuration is changing.
+2018-02-13T10:33:08.516831000 32.845204s notice: Removing file /Users/vinicius/vinicius0026/rethinkdb-migrate/rethinkdb_data2/d5072751-3738-48ab-b3e0-f7a1860cf458
+2018-02-13T10:33:08.516842000 32.845215s info: Table d5072751-3738-48ab-b3e0-f7a1860cf458: Deleted the table.
+2018-02-13T10:33:08.682777000 33.011150s info: Table 55e12929-fead-4efe-af39-35c28ef76077: Starting a new Raft election for term 1.
+2018-02-13T10:33:08.683218000 33.011591s info: Table 55e12929-fead-4efe-af39-35c28ef76077: Added replica on this server.
+2018-02-13T10:33:08.692659000 33.021033s info: Table 55e12929-fead-4efe-af39-35c28ef76077: This server is Raft leader for term 1. Latest log index is 0.
+2018-02-13T10:33:09.201261000 33.529633s info: Table 55e12929-fead-4efe-af39-35c28ef76077: Configuration is changing.
+2018-02-13T10:33:10.121383000 34.449753s notice: Removing file /Users/vinicius/vinicius0026/rethinkdb-migrate/rethinkdb_data2/55e12929-fead-4efe-af39-35c28ef76077
+2018-02-13T10:33:10.121390000 34.449760s info: Table 55e12929-fead-4efe-af39-35c28ef76077: Deleted the table.
+2018-02-13T10:33:11.950146000 36.278514s info: Table 94d9b055-8e32-4247-95ca-4b95a4813d2c: Starting a new Raft election for term 1.
+2018-02-13T10:33:11.950488000 36.278856s info: Table 94d9b055-8e32-4247-95ca-4b95a4813d2c: Added replica on this server.
+2018-02-13T10:33:11.965318000 36.293686s info: Table 94d9b055-8e32-4247-95ca-4b95a4813d2c: This server is Raft leader for term 1. Latest log index is 0.
+2018-02-13T10:33:12.477879000 36.806246s info: Table 94d9b055-8e32-4247-95ca-4b95a4813d2c: Configuration is changing.
+2018-02-13T10:33:13.489936000 37.818301s notice: Removing file /Users/vinicius/vinicius0026/rethinkdb-migrate/rethinkdb_data2/94d9b055-8e32-4247-95ca-4b95a4813d2c
+2018-02-13T10:33:13.489945000 37.818310s info: Table 94d9b055-8e32-4247-95ca-4b95a4813d2c: Deleted the table.
