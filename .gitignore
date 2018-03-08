@@ -14,3 +14,4 @@ cov.html
 
 # ignore these directories
 node_modules
+rethinkdb_data*
