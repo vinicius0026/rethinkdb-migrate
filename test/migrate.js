@@ -12,6 +12,7 @@ const expect = Code.expect
 const it = lab.test
 const before = lab.before
 const afterEach = lab.afterEach
+const beforeEach = lab.beforeEach
 
 const testDb = 'migrations_test_db'
 
@@ -136,6 +137,86 @@ describe('Migrate tests', { timeout: 10000 }, () => {
 
           expect(employeesIdStripped).to.not
             .include({ companyId: 'shield', name: 'Tony Stark' })
+        })
+        .then(() => {
+          conn.close(done)
+        })
+        .catch(done)
+    })
+
+    it('runs only the number of unexecuted migrations up specified in --step', done => {
+      const Migrate = require('../lib/migrate')
+      let conn
+
+      const emitterMessages = []
+      Migrate.emitter.on('info', (message) => {
+        emitterMessages.push(message)
+      })
+
+      // Running up migration from fixtures/migrations directory (2 migrations), but limiting to only 1 migration
+      Migrate({ op: 'up', migrationsDirectory: 'migrations', relativeTo: Path.resolve(__dirname, 'fixtures'), db: testDb, step: 1 })
+        // Verify that only the first migration was run
+        .then(() => r.connect({ db: testDb }))
+        .then(_conn => {
+          conn = _conn
+          return r.tableList().run(conn)
+        })
+        .then(tables => {
+          expect(tables).to.be.an.array()
+          expect(tables).to.include('companies')
+          expect(tables).to.include('employees')
+
+          return r.table('companies').run(conn).then(cursor => cursor.toArray())
+        })
+        .then(companies => {
+          expect(companies).to.be.an.array()
+          expect(companies).to.be.empty()
+
+          return r.table('employees').run(conn).then(cursor => cursor.toArray())
+        })
+        .then(employees => {
+          expect(employees).to.be.an.array()
+          expect(employees).to.be.empty()
+        })
+        // Running migrations from fixtures/migrations2 directory, the last 2 migration should be run
+        .then(() => Migrate({
+          op: 'up',
+          migrationsDirectory: 'migrations2',
+          relativeTo: Path.resolve(__dirname, 'fixtures'),
+          db: testDb
+        }))
+        .then(() => r.table('employees').run(conn).then(cursor => cursor.toArray()))
+        .then(employees => {
+          const employeesIdStripped = employees.map(employee => {
+            const employeeIdStripped = Object.assign({}, employee)
+            delete employeeIdStripped.id
+            return employeeIdStripped
+          })
+
+          expect(employeesIdStripped).to.have.length(5)
+
+          expect(employeesIdStripped).to.include([
+            { companyId: 'acme', name: 'Wile E Coyote' },
+            { companyId: 'acme', name: 'Road Runner' },
+            { companyId: 'shield', name: 'Steve Rogers' },
+            { companyId: 'shield', name: 'Natalia Alianovna Romanova' },
+            { companyId: 'shield', name: 'Robert Bruce Banner' }
+          ])
+
+          expect(employeesIdStripped).to.not
+            .include({ companyId: 'shield', name: 'Tony Stark' })
+          emitterMessages.length = 0
+        })
+        .then(() => Migrate({
+          op: 'up',
+          migrationsDirectory: 'migrations2',
+          relativeTo: Path.resolve(__dirname, 'fixtures'),
+          db: testDb
+        }))
+        .then(() => {
+          expect(emitterMessages).to.include([
+            'No migrations executed.'
+          ])
         })
         .then(() => {
           conn.close(done)
@@ -431,9 +512,12 @@ describe('Migrate tests', { timeout: 10000 }, () => {
   })
 
   describe('Migrate down', () => {
+    const Migrate = require('../lib/migrate')
+
     afterEach(internals.cleanDb)
+    beforeEach(internals.cleanDb)
+
     it('run migrate down, undoing all migrations', done => {
-      const Migrate = require('../lib/migrate')
       let conn
 
       // running up migration before test
@@ -455,6 +539,125 @@ describe('Migrate tests', { timeout: 10000 }, () => {
         .then(entries => {
           expect(entries).to.be.an.array()
           expect(entries).to.have.length(0)
+        })
+        .then(() => {
+          conn.close(done)
+        })
+        .catch(done)
+    })
+
+    it('migrates down only specified number of steps in --step option', done => {
+      let conn
+      const emitterMessages = []
+      Migrate.emitter.on('info', (message) => {
+        emitterMessages.push(message)
+      })
+
+      // running up migration before test
+      Migrate({
+        op: 'up',
+        migrationsDirectory: 'migrations2',
+        relativeTo: Path.resolve(__dirname, 'fixtures'),
+        db: testDb
+      })
+        .then(() => r.connect({ db: testDb }))
+        .then(_conn => {
+          conn = _conn
+
+          return r.tableList().run(conn).then(cursor => cursor.toArray())
+        })
+        .then((tableList) => {
+          expect(tableList).to.be.an.array()
+          expect(tableList).to.have.length(3)
+          expect(emitterMessages).to.include('Executed 3 migrations.')
+        })
+        .then(() => { emitterMessages.length = 0 })
+        // Running down migration and testing
+        .then(() => Migrate({
+          op: 'down',
+          relativeTo: Path.resolve(__dirname, 'fixtures'),
+          db: testDb,
+          step: 2,
+          migrationsDirectory: 'migrations2'
+        }))
+        .then(() => {
+          expect(emitterMessages).to.include([
+            'Cleared 2 migrations from table.',
+            'Executed migration remove-data down',
+            'Executed migration insert-data down'
+          ])
+          expect(emitterMessages).not.to.include([
+            'Executed migration create-table down'
+          ])
+          emitterMessages.length = 0
+        })
+        .then(() => r.tableList().run(conn))
+        .then(tables => {
+          expect(tables).to.have.length(3)
+          expect(tables).to.include([
+            'companies', 'employees'
+          ])
+
+          return r.table('companies').run(conn).then(cursor => cursor.toArray())
+        })
+        .then((companies) => {
+          expect(companies).to.be.an.array()
+          expect(companies).to.be.empty()
+
+          return r.table('employees').run(conn).then(cursor => cursor.toArray())
+        })
+        .then((employees) => {
+          expect(employees).to.be.an.array()
+          expect(employees).to.be.empty()
+
+          return r.table('_migrations').run(conn).then(cursor => cursor.toArray())
+        })
+        .then((remainingMigrations) => {
+          expect(remainingMigrations).to.have.length(1)
+        })
+        // Expect only one migration to run -- although we passed it 2, because only one remains to be rolled back
+        .then(() => Migrate({
+          op: 'down',
+          relativeTo: Path.resolve(__dirname, 'fixtures'),
+          db: testDb,
+          step: 2,
+          migrationsDirectory: 'migrations2'
+        }))
+        .then(() => {
+          expect(emitterMessages).to.include([
+            'Cleared 1 migration from table.',
+            'Executed migration create-table down'
+          ])
+          expect(emitterMessages).not.to.include([
+            'Executed migration remove-data down',
+            'Executed migration insert-data down'
+          ])
+          emitterMessages.length = 0
+        })
+        .then(() => {
+          return r.tableList().run(conn)
+        })
+        .then(list => {
+          expect(list).to.have.length(1)
+          expect(list[0]).to.equal('_migrations')
+
+          return r.table('_migrations').run(conn).then(cursor => cursor.toArray())
+        })
+        .then(entries => {
+          expect(entries).to.be.an.array()
+          expect(entries).to.have.length(0)
+        })
+        .then(() => Migrate({
+          op: 'down',
+          relativeTo: Path.resolve(__dirname, 'fixtures'),
+          db: testDb,
+          step: 2,
+          migrationsDirectory: 'migrations2'
+        }))
+        .then(() => {
+          expect(emitterMessages).to.include([
+            'Migrations table already clear.'
+          ])
         })
         .then(() => {
           conn.close(done)
