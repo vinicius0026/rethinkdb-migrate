@@ -55,7 +55,7 @@ Operation | Command | Description
 ---|---|---
 create | `rethinkdb-migrate create <migration-name>` | Creates a migration with the given name
 up | `rethinkdb-migrate up` | Runs all un-executed migrations up
-down | `rethinkdb-migrate down` | Runs all executed migrations down
+down | `rethinkdb-migrate down` | Runs all executed migrations down (unless `step` option specified)
 
 ### Create
 
@@ -118,7 +118,19 @@ $ rethinkdb-migrate down --db=mydb
 ```
 
 This command will run all `down` steps from migrations that have been run
-previously. See [Options](#options) section to configure this task.
+previously.
+
+> *Caution: this refreshes the database to before the first migration
+> (potentially deleting data added since). Be very cautious about running
+> this command in a production environment.*
+
+To rollback just a subset of migrations, use the `step` option:
+
+```shell
+$ rethinkdb-migrate down --step=2 --db=mydb
+```
+
+See [Options](#options) section to further configure this task.
 
 ### Options
 
@@ -139,6 +151,7 @@ discovery | `false` | Whether or not the driver should try to keep a list of upd
 pool | `false` | Whether or not to use a connection pool when using `rethinkdbdash` driver.
 cursor | `true` | If true, cursors will not be automatically converted to arrays when using `rethinkdbdash`.
 servers | undefined | Array of `{ host, port }` of servers to connect to. Only available when using `rethinkdbdash`
+step | none | Number of migrations to execute or rollback. If omitted, all migrations will be executed or rolled back, potentially refreshing the db to its initial state and resulting in data loss.
 migrationsDirectory | `migrations` | Directory where migration files will be saved
 relativeTo | `process.cwd()` | Root path from which migration directory will be searched or created (if inexistent)'
 migrationsTable | `_migrations` | Table where meta information about migrations will be saved. This should only be changed if you need a \_migrations table in your application

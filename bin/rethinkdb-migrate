@@ -64,13 +64,18 @@ require('yargs')
     handler: runMigrations.bind(null, 'up')
   })
   .example('$0 up', 'Runs all new migrations up')
+  .example('$0 up --step=<number>', 'Run just this number of new migrations up')
   .command({
     command: 'down',
-    desc: 'Runs all down migrations',
+    desc: 'Rollback all previously executed migrations',
     builder: internals.migrateOptions,
     handler: runMigrations.bind(null, 'down')
   })
+  .number('step')
+  .nargs('step', 1)
+  .describe('step', 'Number of migrations to run, if omitted run or rollback all migrations')
   .example('$0 down', 'Runs all migrations down')
+  .example('$0 down --step=<number>', 'Rollback just this number of previously executed migration files')
   .alias('f', 'file')
   .nargs('f', 1)
   .describe('f', 'Uses the provided file as the options to be used when migration is run')
@@ -115,7 +120,7 @@ function logger (emitter) {
  * an option present in the config file and also a environment variable, and so on
  */
 function buildOptions (argv) {
-  const optionsMask = 'name,migrationsDirectory,relativeTo,migrationsTable,host,port,db,user,username,password,authKey,driver,discovery,pool,cursor,servers,ssl,i,ignoreTimestamp'
+  const optionsMask = 'name,migrationsDirectory,relativeTo,migrationsTable,host,port,db,user,username,password,authKey,driver,discovery,pool,cursor,servers,ssl,i,ignoreTimestamp,step'
   const envVars = Mask(process.env, optionsMask)
   const file = Mask(readOptionsFile(argv), optionsMask)
   const args = Mask(argv, optionsMask)
