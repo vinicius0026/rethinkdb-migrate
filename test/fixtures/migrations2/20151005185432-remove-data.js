@@ -5,4 +5,5 @@ exports.up = function (r, connection) {
 }
 
 exports.down = function (r, connection) {
+  return r.table('employees').insert({ companyId: 'shield', name: 'Tony Stark' }).run(connection)
 }
