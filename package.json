@@ -8,9 +8,9 @@
     "test": "test"
   },
   "scripts": {
-    "test": "lab -v -c -a code -L",
+    "test": "lab -v -c -a code -L -l",
     "coveralls": "echo repo_token: $COVERALLS_RETHINKDB_MIGRATE> .coveralls.yml",
-    "coverage": "npm run coveralls && lab -c -a code -r lcov -o lcov.info && cat ./lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "coverage": "npm run coveralls && lab -c -l -a code -r lcov -o lcov.info && cat ./lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "release": "grunt release",
     "release:minor": "grunt release:minor",
     "release:major": "grunt release:major",
