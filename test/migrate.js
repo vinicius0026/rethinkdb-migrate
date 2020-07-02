@@ -224,6 +224,38 @@ describe('Migrate tests', { timeout: 10000 }, () => {
         .catch(done)
     })
 
+    it('saves completed migrations to _migrations table, even if not all migrations complete', done => {
+      const Migrate = require('../lib/migrate')
+      let conn
+
+      const emitterMessages = []
+      Migrate.emitter.on('info', (message) => {
+        emitterMessages.push(message)
+      })
+
+      // Running up migration from fixtures/migrations directory (2 migrations), but limiting to only 1 migration
+      Migrate({ op: 'up', migrationsDirectory: 'failing-migrations', relativeTo: Path.resolve(__dirname, 'fixtures'), db: testDb })
+        // Verify that only the first migration was run
+        .catch((err) => {
+          expect(err).exists()
+          expect(err.message).equals('Failed migrate up intentionally.')
+        })
+        .then(() => r.connect({ db: testDb }))
+        .then((_conn) => {
+          conn = _conn
+          return r.table('_migrations').run(conn).then(cursor => cursor.toArray())
+        })
+        .then(entries => {
+          expect(entries).to.be.an.array()
+          expect(entries).to.have.length(1)
+          expect(entries[0].name).equals('fail-down-pass-up')
+        })
+        .then(() => {
+          conn.close(done)
+        })
+        .catch(done)
+    })
+
     it('rejects promise if error reading migration files', done => {
       const Migrate = Proxyquire('../lib/migrate', {
         fs: {
