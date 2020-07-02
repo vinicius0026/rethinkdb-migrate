@@ -233,7 +233,7 @@ describe('Migrate tests', { timeout: 10000 }, () => {
         emitterMessages.push(message)
       })
 
-      // Running up migration from fixtures/migrations directory (2 migrations), but limiting to only 1 migration
+      // Running up migration from fixtures/failing-migrations directory (2 migrations), but only the first will succeed
       Migrate({ op: 'up', migrationsDirectory: 'failing-migrations', relativeTo: Path.resolve(__dirname, 'fixtures'), db: testDb })
         // Verify that only the first migration was run
         .catch((err) => {
